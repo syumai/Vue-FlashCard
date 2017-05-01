@@ -21,7 +21,7 @@ const AnswerCard = {
       {{ $parent.currentWord.japanese }}
       <div class="tfButtons">
         <div class="tButton">
-          <button @click="$parent.goNext">{{ $parent.isLastWord ? 'テストを終了する' : '次の単語へ' }}</button>
+          <button @click="$parent.goNext">次の単語へ</button>
         </div>
       </div>
     </div>
@@ -46,10 +46,10 @@ module.exports = {
     </div>
   `,
   components: { TestCard, AnswerCard },
+  props: ['words'],
 
   data() {
     return {
-      words: [],
       index: 0,
       answerShown: false
     }
@@ -65,10 +65,6 @@ module.exports = {
   },
 
   methods: {
-    startTest(words) {
-      this.words = words;
-      this.index = 0;
-    },
     finishTest() {
       this.$root.finishTest();
     },
@@ -90,6 +86,10 @@ module.exports = {
     hideAnswer() {
       this.answerShown = false;
     },
+  },
+
+  mounted() {
+    this.index = 0;
   },
 };
 

@@ -10,7 +10,7 @@ module.exports = {
       <div class="title">
         Vue Flash Card
         <main-page v-if="!testStarted" :words="words"></main-page>
-        <test-page v-show="testStarted" ref="testPage"></test-page>
+        <test-page v-else :words="testWords"></test-page>
       </div>
     </div>
   `,
@@ -19,13 +19,14 @@ module.exports = {
 
   data: {
     words,
+    testWords: [],
     testStarted: false
   },
 
   methods: {
     startTest(testWords) {
       if (testWords.length > 0) {
-        this.$refs.testPage.startTest(testWords);
+        this.testWords = testWords;
         this.testStarted = true;
       }
     },

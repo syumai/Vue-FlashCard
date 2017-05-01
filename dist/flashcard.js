@@ -11,19 +11,20 @@ var _require = require('./pages'),
 module.exports = {
   el: "#app",
 
-  template: '\n    <div class="app">\n      <div class="title">\n        Vue Flash Card\n        <main-page v-if="!testStarted" :words="words"></main-page>\n        <test-page v-show="testStarted" ref="testPage"></test-page>\n      </div>\n    </div>\n  ',
+  template: '\n    <div class="app">\n      <div class="title">\n        Vue Flash Card\n        <main-page v-if="!testStarted" :words="words"></main-page>\n        <test-page v-else :words="testWords"></test-page>\n      </div>\n    </div>\n  ',
 
   components: { MainPage: MainPage, TestPage: TestPage },
 
   data: {
     words: words,
+    testWords: [],
     testStarted: false
   },
 
   methods: {
     startTest: function startTest(testWords) {
       if (testWords.length > 0) {
-        this.$refs.testPage.startTest(testWords);
+        this.testWords = testWords;
         this.testStarted = true;
       }
     },
@@ -161,23 +162,23 @@ module.exports = {
 };
 
 },{}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var TestCard = {
-  template: "\n    <div class=\"word\">\n      {{ $parent.currentWord.english }}\n      <div class=\"tfButtons\">\n        <div class=\"tButton\">\n          <button @click=\"$parent.goNext\">\u308F\u304B\u308B</button>\n        </div>\n        <div class=\"fButton\">\t\t\n          <button @click=\"$parent.showAnswer\">\u308F\u304B\u3089\u306A\u3044</button>\n        </div>\n      </div>\n    </div>\n  "
+  template: '\n    <div class="word">\n      {{ $parent.currentWord.english }}\n      <div class="tfButtons">\n        <div class="tButton">\n          <button @click="$parent.goNext">\u308F\u304B\u308B</button>\n        </div>\n        <div class="fButton">\t\t\n          <button @click="$parent.showAnswer">\u308F\u304B\u3089\u306A\u3044</button>\n        </div>\n      </div>\n    </div>\n  '
 };
 
 var AnswerCard = {
-  template: "\n    <div class=\"word\">\n      {{ $parent.currentWord.english }}\n      {{ $parent.currentWord.japanese }}\n      <div class=\"tfButtons\">\n        <div class=\"tButton\">\n          <button @click=\"$parent.goNext\">{{ $parent.isLastWord ? '\u30C6\u30B9\u30C8\u3092\u7D42\u4E86\u3059\u308B' : '\u6B21\u306E\u5358\u8A9E\u3078' }}</button>\n        </div>\n      </div>\n    </div>\n  "
+  template: '\n    <div class="word">\n      {{ $parent.currentWord.english }}\n      {{ $parent.currentWord.japanese }}\n      <div class="tfButtons">\n        <div class="tButton">\n          <button @click="$parent.goNext">\u6B21\u306E\u5358\u8A9E\u3078</button>\n        </div>\n      </div>\n    </div>\n  '
 };
 
 module.exports = {
-  template: "\n    <div>\n      <div class=\"testEndButton\">\n        <button @click=\"finishTest\" type=\"submit\">\u30C6\u30B9\u30C8\u7D42\u4E86</button>\n      </div>\n      <div class=\"testContainer\">\n        <div class=\"list test\">\n          <div class=\"listLabel\">\n            Test Card\n          </div>\n          <test-card v-if=\"!answerShown\"></test-card>\n          <answer-card v-else></answer-card>\n        </div>\n      </div>\n    </div>\n  ",
+  template: '\n    <div>\n      <div class="testEndButton">\n        <button @click="finishTest" type="submit">\u30C6\u30B9\u30C8\u7D42\u4E86</button>\n      </div>\n      <div class="testContainer">\n        <div class="list test">\n          <div class="listLabel">\n            Test Card\n          </div>\n          <test-card v-if="!answerShown"></test-card>\n          <answer-card v-else></answer-card>\n        </div>\n      </div>\n    </div>\n  ',
   components: { TestCard: TestCard, AnswerCard: AnswerCard },
+  props: ['words'],
 
   data: function data() {
     return {
-      words: [],
       index: 0,
       answerShown: false
     };
@@ -194,10 +195,6 @@ module.exports = {
   },
 
   methods: {
-    startTest: function startTest(words) {
-      this.words = words;
-      this.index = 0;
-    },
     finishTest: function finishTest() {
       this.$root.finishTest();
     },
@@ -219,6 +216,10 @@ module.exports = {
     hideAnswer: function hideAnswer() {
       this.answerShown = false;
     }
+  },
+
+  mounted: function mounted() {
+    this.index = 0;
   }
 };
 
